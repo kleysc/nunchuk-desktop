@@ -2269,6 +2269,24 @@ bool nunchukiface::UpdateTransactionSchedule(const std::string &wallet_id, const
     return ret;
 }
 
+bool nunchukiface::SetTransactionBtcPrice(const std::string &wallet_id, const std::string &tx_id, double btc_usd_price, QWarningMessage& msg)
+{
+    bool ret {false};
+    try {
+        if(nunchuk_instance_[nunchukMode()]){
+            ret = nunchuk_instance_[nunchukMode()]->SetTransactionBtcPrice(wallet_id, tx_id, btc_usd_price);
+        }
+    }
+    catch (const nunchuk::BaseException &ex) {
+        DBG_INFO << "exception nunchuk::BaseException" << ex.code() << ex.what();
+        msg.setWarningMessage(ex.code(), ex.what(), EWARNING::WarningType::EXCEPTION_MSG);
+    }
+    catch (std::exception &e) {
+        DBG_INFO << "THROW EXCEPTION" << e.what(); msg.setWarningMessage(-1, e.what(), EWARNING::WarningType::EXCEPTION_MSG);
+    }
+    return ret;
+}
+
 void nunchukiface::ForceRefreshWallet(const std::string &wallet_id, QWarningMessage &msg)
 {
     try {

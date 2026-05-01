@@ -472,6 +472,11 @@ public:
                                    time_t ts,
                                    QWarningMessage& msg);
 
+    bool SetTransactionBtcPrice(const std::string& wallet_id,
+                                const std::string& tx_id,
+                                double btc_usd_price,
+                                QWarningMessage& msg);
+
     void ForceRefreshWallet(const std::string& wallet_id,
                             QWarningMessage& msg);
 
