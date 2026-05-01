@@ -735,6 +735,10 @@ bool nunchukUpdateTransactionSchedule(const QString& wallet_id,
                                       const QString& tx_id,
                                       time_t ts,
                                       QWarningMessage& msg);
+bool nunchukSetTransactionBtcPrice(const QString& wallet_id,
+                                   const QString& tx_id,
+                                   double btc_usd_price,
+                                   QWarningMessage& msg);
 
 void ForceRefreshWallet(const QString& wallet_id, QWarningMessage &msg);
 
