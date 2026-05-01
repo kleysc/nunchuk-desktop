@@ -76,13 +76,15 @@ QOnScreenContentTypeA {
                         horizontalCenter: parent.horizontalCenter
                         top: parent.top
                         topMargin: 2
-                    }                    
+                    }
                     spacing: 16
-                    
+
                     QButtonAssistedWallet {
                         title: STR.STR_QML_1553
                         optional: {
-                            var remainCount = ServiceSetting.servicesTag.walletConfig.remaining_wallet_count
+                            var cfg = ServiceSetting.servicesTag.walletConfig
+                            if (!cfg) return ""
+                            var remainCount = cfg.remaining_wallet_count
                             return qsTr("(%1 remaining)").arg(remainCount)
                         }
                         description: STR.STR_QML_1554
@@ -107,7 +109,7 @@ QOnScreenContentTypeA {
                             QMLHandle.sendEvent(EVT.EVT_ONBOARDING_ACTION_REQUEST, _input)
                         }
                     }
-                    
+
                     QButtonGroupWallet {
                         onItemclicked: {
                             var _input = {
