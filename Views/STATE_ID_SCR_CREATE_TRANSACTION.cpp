@@ -226,6 +226,12 @@ void EVT_CREATE_TRANSACTION_SIGN_REQUEST_HANDLER(QVariant msg) {
                             trans->setUseScriptPath(use_script_path);
                             wallet.data()->AssignTagsToTxChange();
                             wallet.data()->CreateAsisstedTxs(trans->txid(), trans->psbt(), trans->memo());
+                            // Save BTC/USD price at the moment of transaction creation
+                            double btcPrice = AppModel::instance()->btcRates();
+                            if (btcPrice > 0) {
+                                QWarningMessage priceMsg;
+                                bridge::nunchukSetTransactionBtcPrice(wallet_id, trans->txid(), btcPrice, priceMsg);
+                            }
                             AppModel::instance()->requestSyncWalletDb(wallet_id);
                             AppModel::instance()->setTransactionInfo(trans);
                             QEventProcessor::instance()->sendEvent(E::EVT_CREATE_TRANSACTION_SIGN_SUCCEED);
