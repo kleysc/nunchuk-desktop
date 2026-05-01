@@ -42,11 +42,11 @@ Draco::Draco() :
     m_loginHalfToken(""),
     m_deviceId(""),
     m_stayLoggedIn(false),
-    m_isSubscribed(false)
+    m_isSubscribed(false),
+    m_rest(QRestPtr(new QRest()))
 #if ENABLE_WEBVIEW_SIGIN
     ,m_Apple(QAppleSigninViewPtr(new QAppleSigninView()))
     ,m_Google(QGoogleSigninViewPtr(new QGoogleSigninView()))
-    ,m_rest(QRestPtr(new QRest()))
 #endif
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);

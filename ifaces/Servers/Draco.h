@@ -509,12 +509,12 @@ private:
     bool m_stayLoggedIn;
     bool m_isSubscribed;
     QJsonArray m_taproot_support_types {};
+    QRestPtr m_rest;
 
 #if ENABLE_WEBVIEW_SIGIN
     // Social signin
     QAppleSigninViewPtr     m_Apple;
     QGoogleSigninViewPtr    m_Google;
-    QRestPtr                m_rest;
 #endif
 
 public slots:
