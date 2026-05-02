@@ -96,6 +96,7 @@ class BaseTransaction : public QStateFlow {
     Q_OBJECT
     Q_PROPERTY(QString txid READ txid NOTIFY nunchukTransactionChanged)
     Q_PROPERTY(QString memo READ memo NOTIFY nunchukTransactionChanged)
+    Q_PROPERTY(double btcUsdPrice READ btcUsdPrice NOTIFY nunchukTransactionChanged)
     Q_PROPERTY(int height READ height NOTIFY nunchukTransactionChanged)
     Q_PROPERTY(int status READ status NOTIFY nunchukTransactionChanged)
     Q_PROPERTY(int m READ m NOTIFY nunchukTransactionChanged)
@@ -162,6 +163,7 @@ class BaseTransaction : public QStateFlow {
 
     QString memo() const;
     void setMemo(const QString &memo);
+    double btcUsdPrice() const;
 
     int status() const;
     void setStatus(int status);

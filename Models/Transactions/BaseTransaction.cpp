@@ -228,6 +228,10 @@ QString BaseTransaction::memo() const {
     return QString::fromStdString(m_transaction.get_memo());
 }
 
+double BaseTransaction::btcUsdPrice() const {
+    return m_transaction.get_btc_usd_price();
+}
+
 void BaseTransaction::setMemo(const QString &memo) {
     DBG_INFO << memo;
     if (!qUtils::strCompare(memo, QString::fromStdString(m_transaction.get_memo()))) {
