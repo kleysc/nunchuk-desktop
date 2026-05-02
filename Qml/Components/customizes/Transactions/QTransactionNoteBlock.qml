@@ -28,6 +28,7 @@ Column {
     property bool isEditing: false
     signal memoNotify(var newMemo)
     property string transactionNote: transactionInfo.memo
+    property double btcPrice: transactionInfo.btcUsdPrice
     Rectangle {
         width: parent.width
         height: 48
@@ -103,5 +104,35 @@ Column {
         font.family: "Montserrat"
         font.pixelSize: 16
         anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Rectangle {
+        width: parent.width
+        height: 48
+        color: "#F5F5F5"
+        visible: btcPrice > 0
+        QText {
+            text: "BTC/USD price at creation"
+            font.family: "Lato"
+            font.weight: Font.Bold
+            font.pixelSize: 12
+            color: "#323E4A"
+            anchors {
+                left: parent.left
+                leftMargin: 12
+                verticalCenter: parent.verticalCenter
+            }
+        }
+        QText {
+            text: "$ " + btcPrice.toLocaleString(Qt.locale("en_US"), 'f', 2)
+            font.family: "Lato"
+            font.pixelSize: 12
+            color: "#323E4A"
+            anchors {
+                right: parent.right
+                rightMargin: 12
+                verticalCenter: parent.verticalCenter
+            }
+        }
     }
 }
