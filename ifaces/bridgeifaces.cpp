@@ -2348,6 +2348,11 @@ bool bridge::nunchukUpdateTransactionSchedule(const QString &wallet_id, const QS
     return nunchukiface::instance()->UpdateTransactionSchedule(wallet_id.toStdString(),tx_id.toStdString(),ts,msg);
 }
 
+bool bridge::nunchukSetTransactionBtcPrice(const QString &wallet_id, const QString &tx_id, double btc_usd_price, QWarningMessage &msg)
+{
+    return nunchukiface::instance()->SetTransactionBtcPrice(wallet_id.toStdString(), tx_id.toStdString(), btc_usd_price, msg);
+}
+
 void bridge::ForceRefreshWallet(const QString &wallet_id, QWarningMessage &msg)
 {
     nunchukiface::instance()->ForceRefreshWallet(wallet_id.toStdString(),msg);
