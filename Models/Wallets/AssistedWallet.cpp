@@ -319,6 +319,9 @@ QTransactionPtr AssistedWallet::SyncAssistedTxs(const nunchuk::Transaction &tx)
     if(isReplaced()){
         return NULL;
     }
+    if(!isAssistedWallet() && !isClaimed()){
+        return NULL;
+    }
     features::transactions::usecases::SyncTransactionFlowInput  input;
     input.wallet_id = walletId();
     input.group_id = groupId();
@@ -326,12 +329,13 @@ QTransactionPtr AssistedWallet::SyncAssistedTxs(const nunchuk::Transaction &tx)
     input.isClaimed = isClaimed();
     features::transactions::usecases::SyncTransactionFlowUseCase  syncTransactionFlowUseCase;
     auto result = syncTransactionFlowUseCase.execute(input);
-    if (result.isSuccess()) {
-        auto transaction = result.value().transaction;
-        auto tranPtr = transactionHistory()->getTransactionByTxid(QString::fromStdString(tx.get_txid()));
-        if(!transaction.isEmpty() && tranPtr){
-            tranPtr->setServerKeyMessage(transaction);
-        }
+    if (!result.isSuccess()) {
+        return NULL;
+    }
+    auto transaction = result.value().transaction;
+    auto tranPtr = transactionHistory()->getTransactionByTxid(QString::fromStdString(tx.get_txid()));
+    if(!transaction.isEmpty() && tranPtr){
+        tranPtr->setServerKeyMessage(transaction);
     }
     return bridge::convertTransaction(result.value().tx, walletId());
 }
