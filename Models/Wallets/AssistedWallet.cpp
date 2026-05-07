@@ -342,6 +342,9 @@ void AssistedWallet::UpdateAssistedTxs(const QString &txid, const QString &memo)
     if(isReplaced()){
         return;
     }
+    if(!isAssistedWallet() && !isClaimed()){
+        return;
+    }
     features::transactions::usecases::UpdateTransactionInput input;
     input.wallet_id = walletId();
     input.group_id = groupId();
@@ -356,6 +359,9 @@ void AssistedWallet::CancelAssistedTxs(const QString &txid)
 {
     DBG_INFO << "tx_id:" << txid << "wallet status:" << status();
     if(isReplaced()){
+        return;
+    }
+    if(!isAssistedWallet() && !isClaimed()){
         return;
     }
 
@@ -374,6 +380,9 @@ void AssistedWallet::CreateAsisstedTxs(const QString &txid, const QString &psbt,
     if(isReplaced()){
         return;
     }
+    if(!isAssistedWallet() && !isClaimed()){
+        return;
+    }
     features::transactions::usecases::CreateTransactionInput  input;
     input.wallet_id = walletId();
     input.group_id = groupId();
@@ -388,6 +397,9 @@ void AssistedWallet::SignAsisstedTxs(const QString &tx_id, const QString &psbt, 
 {
     DBG_INFO << "tx_id:" << tx_id << "wallet status:" << status();
     if(isReplaced()){
+        return;
+    }
+    if(!isAssistedWallet() && !isClaimed()){
         return;
     }
     features::transactions::usecases::SignTransactionInput  input;
