@@ -331,6 +331,9 @@ QTransactionPtr AssistedWallet::SyncAssistedTxs(const nunchuk::Transaction &tx)
     if(isReplaced()){
         return NULL;
     }
+    if(!isAssistedWallet() && !isClaimed()){
+        return NULL;
+    }
     features::transactions::usecases::SyncTransactionFlowInput  input;
     input.wallet_id = walletId();
     input.group_id = groupId();
