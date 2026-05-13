@@ -34,6 +34,12 @@ fi
 echo "==> Running macdeployqt"
 "$MACDEPLOYQT" "$APP" -qmldir="$QMLDIR" -always-overwrite
 
+# macdeployqt rewrites load paths, which invalidates the original code signatures
+# of the Qt frameworks. On Apple Silicon macOS refuses to load unsigned (or
+# broken-signature) binaries, so we re-seal everything with an ad-hoc signature.
+echo "==> Re-signing bundle (ad-hoc)"
+codesign --force --deep --sign - "$APP"
+
 echo "==> Verifying bundle has no /opt/homebrew or /usr/local LOAD references"
 # otool -L prints: header line, then install_name (LC_ID_DYLIB) on line 2, then LOAD deps.
 # We only care about LOAD deps (line 3+), since install_name is cosmetic metadata.
