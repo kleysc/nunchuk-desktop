@@ -41,6 +41,8 @@ void SyncWalletFromRemoteUseCase::syncWalletFromRemote(const QJsonObject &wallet
     walletCached(walletData);
     DBG_INFO << "walletData";
     QString wallet_id = walletData.value("local_id").toString();
+    nunchuk::Wallet wallet_for_group;
+    bool have_wallet_for_group = false;
     if (!bridge::nunchukHasWallet(wallet_id)) {
         QWarningMessage msg;
         QString bsms = walletData.value("bsms").toString();
@@ -52,6 +54,8 @@ void SyncWalletFromRemoteUseCase::syncWalletFromRemote(const QJsonObject &wallet
             wallet_result.set_description(wallet_description.toStdString());
             auto newWalet = bridge::wallet::CreateWallet(wallet_result, true, "");
             syncSignerFromRemote(walletData.value("signers").toArray(), newWalet);
+            wallet_for_group = wallet_result;
+            have_wallet_for_group = true;
         }
     } else {
         QWarningMessage msg;
@@ -60,7 +64,29 @@ void SyncWalletFromRemoteUseCase::syncWalletFromRemote(const QJsonObject &wallet
         getWallet.set_description(walletData.value("description").toString().toStdString());
         bridge::UpdateWallet(getWallet, msg);
         syncSignerFromRemote(walletData.value("signers").toArray(), getWallet);
-    }    
+        if (msg.type() == (int)EWARNING::WarningType::NONE_MSG) {
+            wallet_for_group = getWallet;
+            have_wallet_for_group = true;
+        }
+    }
+
+    // Enrol into Group service if this is a Premium group wallet. Runs for
+    // both newly-created and already-existing local wallets to repair clients
+    // where the wallet was synced before group enrolment was wired up.
+    // Fixes WALLET_NOT_FOUND -7002 on in-wallet chat for multisig members.
+    if (have_wallet_for_group) {
+        QWarningMessage gmsg;
+        DBG_INFO << "[group-enrol] check wallet_id=" << wallet_id;
+        bool isGroup = bridge::CheckGroupWalletExists(wallet_for_group, gmsg);
+        DBG_INFO << "[group-enrol] CheckGroupWalletExists=" << isGroup
+                 << " msg_code=" << gmsg.code() << " msg=" << gmsg.what();
+        if (isGroup) {
+            QWarningMessage rmsg;
+            bridge::RecoverGroupWallet(wallet_id, rmsg);
+            DBG_INFO << "[group-enrol] RecoverGroupWallet msg_code=" << rmsg.code()
+                     << " msg=" << rmsg.what();
+        }
+    }
 }
 
 void SyncWalletFromRemoteUseCase::syncSignerFromRemote(const QJsonArray &signers, std::optional<nunchuk::Wallet> local_wallet) {
